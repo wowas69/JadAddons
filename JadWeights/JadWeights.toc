@@ -1,0 +1,4 @@
+w## Interface: 80300
+## Title: |cFF00FF80JadWeights|r v0.69
+## Notes: For PROs only
+JadWeights.lua

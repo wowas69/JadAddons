@@ -1,0 +1,4 @@
+## Interface: 80300
+## Title: |cFF00FF80JadUI|r v0.69
+## Notes: For PROs only
+JadUI.lua
