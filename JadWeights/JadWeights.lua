@@ -16,12 +16,12 @@ local COLOR_LEFT = { R = 1, G = 0.823, B = 0 };
 local COLOR_RIGHT = { R = 0, G = 1, B = 0 };
 
 -- Current weights
-local dpsWeight = 13.69;
-local critWeight = 4.85;
-local hasteWeight = 4.67;
-local masteryWeight = 3.92;
-local versatilityWeight = 4.50;
-local strengthWeight = 2.38;
+local dpsWeight = 15.14;
+local hasteWeight = 5.06;
+local critWeight = 6.36;
+local masteryWeight = 5.86;
+local versatilityWeight = 6.11;
+local strengthWeight = 2.61;
 local staminaWeight = 0.1;
 
 -- App init

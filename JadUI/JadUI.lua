@@ -1,10 +1,11 @@
 -- Globals
 local spellPool = {};
+local auraPool = {};
+local barsPool = {};
 local CAST_PLS = "CAST";
 local FREE_CAST = "FREE";
 local CD_FORMAT = "%.1f";
-local ROW_1 = -120;
-local ROW_2 = -220;
+local ROW_1 = -250;
 
 -- App init
 local mainFrame = CreateFrame("Frame", "JadUIFrame");
@@ -24,69 +25,83 @@ function JadUI_Main()
     TargetFrame:ClearAllPoints();
     TargetFrame:SetPoint("CENTER", 420, 350);
 
-    -- Left side
-    CreateUISpell("Revenge", 40, -25, ROW_1, false, false, true, false);
-    CreateUISpell("Shield Slam", 40, -70, ROW_1, true, false, true, false);
-    CreateUISpell("Thunder Clap", 40, -115, ROW_1, true, false, false, false);
-    CreateUISpell("Devastate", 40, -160, ROW_1, true, false, false, false);
-    CreateUISpell("Battle Shout", 40, -280, ROW_1, true, true, false, false);
+    MainMenuBarArtFrame:Hide();
 
-    CreateUISpell("Shield Wall", 40, -25, ROW_2, false, true, false, false);
-    CreateUISpell("Spell Reflection", 40, -70, ROW_2, false, true, false, false);
-    CreateUISpell("Berserker Rage", 40, -115, ROW_2, false, true, false, false);
+    -- Bars
+    CreateUIBar("Health", 200, 20, -100, ROW_1 + 50, 0.78, 0.61, 0.43, RefreshHealth);
+    CreateUIBar("Rage", 200, 20, -100, ROW_1 + 30, 1, 0, 0, RefreshRage);
+    CreateUICastBar("PlayerCast", 200, 20, -100, ROW_1 - 75, 1, 1, 0, RefreshPlayerCast);
+    CreateUICastBar("PlayerChannel", 200, 20, -100, ROW_1 - 75, 0, 1, 0, RefreshPlayerChannel);
 
-    CreateUISpell("Heroic Leap", 40, -280, ROW_1 + 100, false, false, false, false);
-    CreateUISpell("Intercept", 40, -280, ROW_1 + 160, false, false, false, true);
+    -- Auras
+    CreateUIAura("Sweeping Strikes", 40, -100, ROW_1 + 85, true);
+    CreateUIAura("Test of Might", 40, -60, ROW_1 + 85, true);
+    CreateUIAura("Draconic Empowerment", 40, -20, ROW_1 + 85, true);
+    CreateUIAura("Vita Charged", 40, 20, ROW_1 + 85, true);
+    CreateUIAura("Racing Pulse", 40, 60, ROW_1 + 85, true);
+    CreateUIAura("Dragon's Flight", 40, 100, ROW_1 + 85, true);
 
-    -- Right side
-    CreateUISpell("Shield Block", 40, 25, ROW_1, true, true, false, true);
-    CreateUISpell("Ignore Pain", 40, 70, ROW_1, true, true, false, false);
-    CreateUISpell("Avatar", 40, 115, ROW_1, true, true, false, false, true);
-    CreateUISpell("Demoralizing Shout", 40, 160, ROW_1, true, false, false, false, true);
+    -- Spells
+    CreateUISpell("Bladestorm", 40, -140, ROW_1, false, false, true);
+    CreateUISpell("Die by the Sword", 40, -180, ROW_1, false, false, false);
+    CreateUISpell("Hamstring", 40, -220, ROW_1, false, false, true);
+    CreateUISpell("Sweeping Strikes", 40, -140, ROW_1 + 40, false, false, true);
+    CreateUISpell("Berserker Rage", 40, -180, ROW_1 + 40, false, false, true);
+    CreateUISpell("Battle Shout", 40, -220, ROW_1 + 40, false, false, false);
 
-    CreateUISpell("Last Stand", 40, 25, ROW_2, false, true, false, false);
-    CreateUISpell("Victory Rush", 40, 70, ROW_2, false, true, true, false);
-    CreateUISpell("Rallying Cry", 40, 115, ROW_2, false, true, false, false);
+    CreateUISpell("Whirlwind", 40, -80, ROW_1, true, false, true);
+    --CreateUISpell("Rend", 40, -80, ROW_1, false, false, true);
+    CreateUISpell("Mortal Strike", 40, -40, ROW_1, false, false, true);
+    CreateUISpell("Overpower", 40, 0, ROW_1, true, false, false);
+    CreateUISpell("Execute", 40, 40, ROW_1, true, false, false);
+    CreateUISpell("Slam", 40, 80, ROW_1, true, false, true);
 
-    CreateUISpell("Shockwave", 40, 280, ROW_1, true, false, false, false);
-    CreateUISpell("Hyper Organic Light Originator", 40, 325, ROW_1, true, false, false, false);
+    CreateUISpell("Storm Bolt", 40, -80, ROW_1 - 40, false, false, false);
+    CreateUISpell("Pummel", 40, -40, ROW_1 - 40, false, false, false);
+    CreateUISpell("Charge", 40, 0, ROW_1 - 40, false, false, false);
+    CreateUISpell("Heroic Leap", 40, 40, ROW_1 - 40, false, false, false);
+    CreateUISpell("Victory Rush", 40, 80, ROW_1 - 40, true, false, false);
 
-    CreateUISpell("Pummel", 40, 280, ROW_1 + 100, false, false, false, false);
-    CreateUISpell("Taunt", 40, 280, ROW_1 + 160, false, false, false, false);
-    CreateUISpell("Heroic Throw", 40, 280, ROW_1 + 220, false, false, false, false);
-    CreateUISpell("Intimidating Shout", 40, 280, ROW_1 + 280, false, false, false, false);
+    CreateUISpell("Warbreaker", 40, 140, ROW_1, false, false, true);
+    CreateUISpell("Skullsplitter", 40, 180, ROW_1, false, false, false);
+    --CreateUISpell("Disarm", 40, 220, ROW_1, false, false, false);
+    CreateUISpell("Focused Azerite Beam", 40, 140, ROW_1 + 40,  false, false, true);
+    --CreateUISpell("Memory of Lucid Dreams", 40, 140, ROW_1 + 40,  false, false, true);
+    --CreateUISpell("Sharpen Blade", 40, 140, ROW_1 + 40,  false, false, true);
+    CreateUISpell("Intimidating Shout", 40, 180, ROW_1 + 40, false, false, true);
+    --CreateUISpell("Spell Reflection", 40, 220, ROW_1 + 40, false, false, true);
+    CreateUISpell("Rallying Cry", 40, 260, ROW_1 + 40, false, false, true);
     
     -- Start UI updates
-    C_Timer.NewTicker(0.01, RefreshUISpells);
+    C_Timer.NewTicker(0.01, Refresh);
 
-    print("|cFF00FF80JadUI v0.69|r |cFFFFFF00initialized!|r");
+    print("|cFF00FF80JadUI v1.69|r |cFFFFFF00initialized!|r");
 end
 
--- spellPool[spellId]: background, foreground, text, chargesText, castWhenAvailable, trackBuff, castWhenHighlight, spellName, trackCharges, priorityCast
-function CreateUISpell(name, size, posX, posY, castWhenAvailable, trackBuff, castWhenHighlight, trackCharges, priorityCast)
+function CreateUISpell(name, size, posX, posY, castWhenHighlight, trackCharges, priorityCast)
     local spellFrame = CreateFrame("Frame", nil, UIParent);
+    spellFrame:SetFrameStrata("BACKGROUND");
+    spellFrame:SetWidth(size);
+    spellFrame:SetHeight(size);
+    spellFrame:SetPoint("CENTER", posX, posY);
+
     local _, _, spellIcon, _, _, _, spellId = GetSpellInfo(name);
     
     local spellBackground = spellFrame:CreateTexture(nil, "BACKGROUND");
-    spellBackground:SetColorTexture(0, 0, 0, 0.8);
+    spellBackground:SetColorTexture(0, 0, 0, 0);
     spellBackground:SetAllPoints(spellFrame);
 
     local spellForeground = spellFrame:CreateTexture(nil, "LOW");
     spellForeground:SetTexture(spellIcon);
     spellForeground:SetAllPoints(spellFrame);
 
-    spellFrame:SetFrameStrata("BACKGROUND");
-    spellFrame:SetWidth(size);
-    spellFrame:SetHeight(size);
-    spellFrame:SetPoint("CENTER", posX, posY);
-    -- spellFrame:SetMovable(true);
-    -- spellFrame:EnableMouse(true);
-    -- spellFrame:RegisterForDrag("LeftButton");
-    -- spellFrame:SetScript("OnDragStart", spellFrame.StartMoving);
-    -- spellFrame:SetScript("OnDragStop", spellFrame.StopMovingOrSizing);
+    local spellCooldown = CreateFrame("Cooldown", "SpellCD", spellFrame, "CooldownFrameTemplate");
+    spellCooldown:SetAllPoints();
 
     local text = spellFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     text:SetPoint("BOTTOM", 0, -20);
+    text:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
+    text:SetJustifyH("LEFT")
 
     local chargesText = spellFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     chargesText:SetPoint("TOPRIGHT", 5, 5);
@@ -98,18 +113,122 @@ function CreateUISpell(name, size, posX, posY, castWhenAvailable, trackBuff, cas
         foreground = spellForeground,
         text = text,
         chargesText = chargesText,
-        castWhenAvailable = castWhenAvailable,
-        trackBuff = trackBuff,
         castWhenHighlight = castWhenHighlight,
         spellName = name,
         trackCharges = trackCharges,
-        priorityCast = priorityCast
+        priorityCast = priorityCast,
+        cooldown = spellCooldown
 	};
 end
 
-function RefreshUISpells()
+function CreateUIAura(name, size, posX, posY, trackValue)
+    local auraFrame = CreateFrame("Frame", nil, UIParent);
+    auraFrame:SetFrameStrata("BACKGROUND");
+    auraFrame:SetWidth(size);
+    auraFrame:SetHeight(size);
+    auraFrame:SetPoint("CENTER", posX, posY);
+
+    local auraTexture = auraFrame:CreateTexture(nil, "LOW");
+    auraTexture:SetAllPoints(auraFrame);
+
+    local auraCooldown = CreateFrame("Cooldown", "AuraCD", auraFrame, "CooldownFrameTemplate");
+    auraCooldown:SetAllPoints()
+
+    local auraText = auraCooldown:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+    auraText:SetPoint("BOTTOM", 0, 0);
+    auraText:SetTextColor(1, 1, 1, 1);
+
+    auraPool[name] = {
+        frame = auraFrame,
+        texture = auraTexture,
+        text = auraText,
+        cooldown = auraCooldown,
+        iconSet = false,
+        trackValue = trackValue
+	};
+end
+
+function CreateUIBar(name, width, height, posX, posY, cRed, cGreen, cBlue, refreshCall)
+    local statusbar = CreateFrame("StatusBar", nil, UIParent)
+    statusbar:SetPoint("LEFT", UIParent, "CENTER", posX, posY)
+    statusbar:SetWidth(width)
+    statusbar:SetHeight(height)
+    statusbar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar")
+    statusbar:GetStatusBarTexture():SetHorizTile(false)
+    statusbar:GetStatusBarTexture():SetVertTile(false)
+    statusbar:SetStatusBarColor(cRed, cGreen, cBlue)
+
+    local text = statusbar:CreateFontString(nil, "OVERLAY")
+    text:SetPoint("LEFT", 4, 0)
+    text:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
+    text:SetJustifyH("LEFT")
+    text:SetShadowOffset(1, -1)
+    text:SetTextColor(1, 1, 1)
+    text:SetText("100%")
+  
+    local statusbarBack = CreateFrame("Frame", nil, UIParent)
+    statusbarBack:SetPoint("LEFT", UIParent, "CENTER", posX, posY)
+    statusbarBack:SetWidth(width)
+    statusbarBack:SetHeight(height)
+
+    local background = statusbarBack:CreateTexture(nil, "BACKGROUND");
+    background:SetColorTexture(cRed, cGreen, cBlue, 0.2);
+    background:SetAllPoints(statusbarBack);
+  
+    barsPool[name] = 
+    {
+        frame = statusbar,
+        width = width,
+        text = text,
+        refreshCall = refreshCall
+    };
+end
+
+function CreateUICastBar(name, width, height, posX, posY, cRed, cGreen, cBlue, refreshCall)
+    local statusbar = CreateFrame("StatusBar", nil, UIParent);
+    statusbar:SetPoint("LEFT", UIParent, "CENTER", posX, posY);
+    statusbar:SetWidth(width);
+    statusbar:SetHeight(height);
+    statusbar:SetStatusBarTexture("Interface\\TARGETINGFRAME\\UI-StatusBar");
+    statusbar:GetStatusBarTexture():SetHorizTile(false);
+    statusbar:GetStatusBarTexture():SetVertTile(false);
+    statusbar:SetStatusBarColor(cRed, cGreen, cBlue);
+
+    local text = statusbar:CreateFontString(nil, "OVERLAY");
+    text:SetPoint("LEFT", height + 10, 0);
+    text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+    text:SetJustifyH("LEFT");
+    text:SetShadowOffset(1, -1);
+    text:SetTextColor(1, 1, 1);
+    text:SetText("Focused Azerite Beam");
+
+    local icon = statusbar:CreateTexture(nil, "OVERLAY");
+    icon:SetPoint("LEFT", 0, 0);
+    icon:SetWidth(height);
+    icon:SetHeight(height);
+    icon:SetTexture(2967111);
+  
+    barsPool[name] = 
+    {
+        frame = statusbar,
+        width = width,
+        text = text,
+        refreshCall = refreshCall,
+        icon = icon
+    };
+end
+
+function Refresh()
 	for spellId, spellData in pairs(spellPool) do
-        RefreshUISpell(spellId, spellData)
+        RefreshUISpell(spellId, spellData);
+    end
+
+    for auraName, auraData in pairs(auraPool) do
+        RefreshUIAura(auraName, auraData);
+    end
+
+    for barName, barData in pairs(barsPool) do
+        RefreshUIBar(barName, barData);
     end
 end
 
@@ -127,78 +246,153 @@ function RefreshUISpell(spellId, spellData)
         spellData.chargesText:SetText(charges);
     end
 
-    -- Handle text
-    if spellData.trackBuff and buffName then
-        spellData.text:SetText(expirationTime);
-
-    elseif onCooldown then
-        local cdString = string.format(CD_FORMAT, cdLeft);
-        spellData.text:SetText(cdString);
-
-    elseif spellData.castWhenHighlight and highlighted then
-        spellData.text:SetText(FREE_CAST);
-
-    elseif spellData.castWhenAvailable then
-        spellData.text:SetText(CAST_PLS);
-
+    -- Handle textures
+    if onCooldown then
+        spellData.cooldown:SetCooldown(cdStart, cdDuration);
+        spellData.cooldown:Show();
     else
-        spellData.text:SetText("");
+        spellData.cooldown:Hide();
     end
 
-    spellData.text:SetPoint("BOTTOM", 0, -spellData.text:GetStringHeight() - 2);
-
-    -- Handle textures
-    if spellData.trackBuff and buffName then
-        spellData.background:SetColorTexture(0, 0, 0, 0.8);
+    if not usable then
+        spellData.foreground:SetAlpha(0.5);
+        spellData.background:SetColorTexture(0, 0, 1, 0.8);
+    else
         spellData.foreground:SetAlpha(1);
+        spellData.background:SetColorTexture(0, 0, 0, 0);
+    end
 
-    elseif spellData.castWhenHighlight and highlighted then
+    if spellData.castWhenHighlight and highlighted then
+        spellData.foreground:SetAlpha(0.5);
         spellData.background:SetColorTexture(1, 1, 0, 0.8);
         
-        if onCooldown or not usable then
-            spellData.foreground:SetAlpha(0.5);
-        else
-            spellData.foreground:SetAlpha(0.8);
+        if not usable then
+            spellData.background:SetColorTexture(0.6, 0.6, 1, 0.8);
         end
-
-    elseif onCooldown or not usable then
-        spellData.foreground:SetAlpha(0.5);
-
-        if spellData.priorityCast and cdLeft < 1 then
-            spellData.background:SetColorTexture(0, 1, 0.5, 0.8);
-        else
-            spellData.background:SetColorTexture(0, 0, 0, 0.8);
-        end
-
-    elseif spellData.castWhenAvailable then
-        spellData.background:SetColorTexture(0, 1, 0.5, 0.8);
-        spellData.foreground:SetAlpha(0.8);
-
-    else
-        spellData.background:SetColorTexture(0, 0, 0, 0.8);
-        spellData.foreground:SetAlpha(0.8);
     end
 end
 
--- auraId, expString
+function RefreshUIAura(auraName, auraData)
+    local name, _, icon, value, expirationTime, duration = FindAura("player", auraName);
+
+    if name == auraName then
+        if not auraData.iconSet then
+            auraData.iconSet = true;
+            auraData.texture:SetTexture(icon);
+        end
+
+        auraData.cooldown:SetCooldown(expirationTime - duration, duration);
+
+        if auraData.trackValue then
+            auraData.text:SetText(value);
+        else 
+            auraData.text:SetText("");
+        end
+
+        auraData.cooldown:Show();
+        auraData.frame:Show();
+    else
+        auraData.cooldown:Hide();
+        auraData.frame:Hide();
+    end
+end
+
+function RefreshUIBar(barName, barData)
+	barData.refreshCall(barData);
+end
+
+-- name, expString, icon, value, expirationTime, duration
 function FindAura(unit, spellName)
     for i = 1, 40 do
-	   local name, _, _, _, _, expirationTime = UnitAura(unit, i);
-
+	   local name, icon, _, _, duration, expirationTime, _, _, _, _, _, _, _, _, _, value = UnitAura(unit, i);
+       
        if name == spellName then
-            local expString = ""
+            local expString = "";
 
             if expirationTime then
-                local expTime = expirationTime - GetTime() 
+                local expTime = expirationTime - GetTime();
 
                 if expTime < 60 and expTime >= 0 then
-                    expString = string.format(CD_FORMAT, expTime)
+                    expString = string.format(CD_FORMAT, expTime);
                 end
             end
 
-            return name, expString;
+            return name, expString, icon, value, expirationTime, duration;
        end
     end
 
-    return nil, nil;
+    return nil, nil, nil, nil, nil, nil;
 end
+
+function RefreshRage(barData)
+    local rage = UnitPower("player");
+    local frameWidth = rage * barData.width / 100;
+    
+    if frameWidth == 0 then
+        frameWidth = 1;
+    end
+
+    barData.text:SetText(rage);
+    barData.frame:SetWidth(frameWidth);
+end
+
+function RefreshHealth(barData)
+    local health = UnitHealth("player");
+    local maxHealth = UnitHealthMax("player");
+
+    local healthText = string.format("%.1f", (health / maxHealth) * 100) .. "%";
+    local frameWidth = health * barData.width / maxHealth;
+  
+    if frameWidth == 0 then
+        frameWidth = 1;
+        healthText = "DEAD";
+    end
+
+    barData.text:SetText(healthText);
+    barData.frame:SetWidth(frameWidth);
+end
+
+function RefreshPlayerCast(barData)
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo("player")
+
+    if name then
+        CastingBarFrame:Hide();
+
+        local total = (endTimeMS - startTimeMS) / 1000;
+        local finish = endTimeMS / 1000 - GetTime();
+        local progress = 1 - (finish / total);
+
+        barData.icon:SetTexture(texture);
+        barData.text:SetText(name);
+        barData.frame:SetWidth(progress * barData.width);
+        barData.frame:Show();
+    else
+        barData.frame:Hide();
+    end
+end
+
+function RefreshPlayerChannel(barData)
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo("player")
+
+    if name then
+        CastingBarFrame:Hide();
+
+        local total = (endTimeMS - startTimeMS) / 1000;
+        local finish = endTimeMS / 1000 - GetTime();
+        local progress = finish / total;
+
+        barData.icon:SetTexture(texture);
+        barData.text:SetText(name);
+        barData.frame:SetWidth(progress * barData.width);
+        barData.frame:Show();
+    else
+        barData.frame:Hide();
+    end
+end
+
+
+    -- spellFrame:SetMovable(true);
+    -- spellFrame:EnableMouse(true);
+    -- spellFrame:RegisterForDrag("LeftButton");
+    -- spellFrame:SetScript("OnDragStart", spellFrame.StartMoving);
+    -- spellFrame:SetScript("OnDragStop", spellFrame.StopMovingOrSizing);
