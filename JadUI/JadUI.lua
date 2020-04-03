@@ -27,6 +27,21 @@ function JadUI_Main()
 
     MainMenuBarArtFrame:Hide();
 
+    local playerClass, playerSpec = GetPlayerInfo();
+
+    if (playerClass == "WARRIOR" and playerSpec == "Arms") then
+        ArmsWarriorSetup();
+    elseif (playerClass == "MAGE" and playerSpec == "Fire") then
+        FireMageSetup();
+    end
+    
+    -- Start UI updates
+    C_Timer.NewTicker(0.01, Refresh);
+
+    print("|cFF00FF80JadUI v1.69|r |cFFFFFF00initialized!|r");
+end
+
+function ArmsWarriorSetup()
     -- Bars
     CreateUIBar("Health", 200, 20, -100, ROW_1 + 50, 0.78, 0.61, 0.43, RefreshHealth);
     CreateUIBar("Rage", 200, 20, -100, ROW_1 + 30, 1, 0, 0, RefreshRage);
@@ -65,17 +80,53 @@ function JadUI_Main()
     CreateUISpell("Warbreaker", 40, 140, ROW_1, false, false, true);
     CreateUISpell("Skullsplitter", 40, 180, ROW_1, false, false, false);
     --CreateUISpell("Disarm", 40, 220, ROW_1, false, false, false);
-    CreateUISpell("Focused Azerite Beam", 40, 140, ROW_1 + 40,  false, false, true);
+    --CreateUISpell("Focused Azerite Beam", 40, 140, ROW_1 + 40,  false, false, true);
     --CreateUISpell("Memory of Lucid Dreams", 40, 140, ROW_1 + 40,  false, false, true);
-    --CreateUISpell("Sharpen Blade", 40, 140, ROW_1 + 40,  false, false, true);
+    CreateUISpell("Blood of the Enemy", 40, 140, ROW_1 + 40,  false, false, true);
     CreateUISpell("Intimidating Shout", 40, 180, ROW_1 + 40, false, false, true);
-    --CreateUISpell("Spell Reflection", 40, 220, ROW_1 + 40, false, false, true);
     CreateUISpell("Rallying Cry", 40, 260, ROW_1 + 40, false, false, true);
-    
-    -- Start UI updates
-    C_Timer.NewTicker(0.01, Refresh);
+end
 
-    print("|cFF00FF80JadUI v1.69|r |cFFFFFF00initialized!|r");
+function FireMageSetup()
+	-- Bars
+    CreateUIBar("Health", 200, 20, -100, ROW_1 + 50, 0, 1, 0, RefreshHealth);
+    CreateUIBar("Mana", 200, 20, -100, ROW_1 + 30, 0, 0, 1, RefreshMana);
+    CreateUICastBar("PlayerCast", 200, 20, -100, ROW_1 - 75, 1, 1, 0, RefreshPlayerCast);
+    CreateUICastBar("PlayerChannel", 200, 20, -100, ROW_1 - 75, 0, 1, 0, RefreshPlayerChannel);
+
+    -- Auras
+    CreateUIAura("Combustion", 40, -100, ROW_1 + 85, true);
+    CreateUIAura("Memory of Lucid Dreams", 40, -60, ROW_1 + 85, true);
+    --CreateUIAura("Draconic Empowerment", 40, -20, ROW_1 + 85, true);
+    --CreateUIAura("Vita Charged", 40, 20, ROW_1 + 85, true);
+    --CreateUIAura("Racing Pulse", 40, 60, ROW_1 + 85, true);
+    --CreateUIAura("Dragon's Flight", 40, 100, ROW_1 + 85, true);
+
+    -- Spells
+    CreateUISpell("Blazing Barrier", 40, -140, ROW_1, false, false, true);
+    CreateUISpell("Remove Curse", 40, -180, ROW_1, false, false, false);
+    --CreateUISpell("Time Warp", 40, -220, ROW_1, false, false, true);
+    CreateUISpell("Rune of Power", 40, -140, ROW_1 + 40, false, true, true);
+    CreateUISpell("Invisibility", 40, -180, ROW_1 + 40, false, false, true);
+    CreateUISpell("Time Warp", 40, -220, ROW_1 + 40, false, false, false);
+
+    CreateUISpell("Fire Blast", 40, -80, ROW_1, true, true, true);
+    CreateUISpell("Pyroblast", 40, -40, ROW_1, true, false, true);
+    CreateUISpell("Fireball", 40, 0, ROW_1, false, false, false);
+    CreateUISpell("Meteor", 40, 40, ROW_1, false, false, false);
+    CreateUISpell("Flamestrike", 40, 80, ROW_1, true, false, true);
+
+    CreateUISpell("Dragon's Breath", 40, -80, ROW_1 - 40, false, false, false);
+    CreateUISpell("Counterspell", 40, -40, ROW_1 - 40, false, false, false);
+    CreateUISpell("Spellsteal", 40, 0, ROW_1 - 40, false, false, false);
+    CreateUISpell("Shimmer", 40, 40, ROW_1 - 40, false, true, false);
+    CreateUISpell("Frost Nova", 40, 80, ROW_1 - 40, true, false, false);
+
+    CreateUISpell("Combustion", 40, 140, ROW_1, false, false, true);
+    CreateUISpell("Scorch", 40, 180, ROW_1, false, false, false);
+    CreateUISpell("Memory of Lucid Dreams", 40, 140, ROW_1 + 40,  false, false, true);
+    --CreateUISpell("Manifesto of Madness", 40, 180, ROW_1 + 40, false, false, true);
+    CreateUISpell("Ice Block", 40, 260, ROW_1 + 40, false, false, true);
 end
 
 function CreateUISpell(name, size, posX, posY, castWhenHighlight, trackCharges, priorityCast)
@@ -104,7 +155,11 @@ function CreateUISpell(name, size, posX, posY, castWhenHighlight, trackCharges, 
     text:SetJustifyH("LEFT")
 
     local chargesText = spellFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
-    chargesText:SetPoint("TOPRIGHT", 5, 5);
+    chargesText:SetPoint("BOTTOMRIGHT", 0, 0);
+    chargesText:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE");
+    chargesText:SetJustifyH("LEFT");
+    chargesText:SetShadowOffset(1, -1);
+    chargesText:SetTextColor(1, 1, 1);
 
     spellFrame:Show();
 
@@ -336,6 +391,21 @@ function RefreshRage(barData)
     barData.frame:SetWidth(frameWidth);
 end
 
+function RefreshMana(barData)
+    local mana = UnitPower("player");
+    local maxMana = UnitPowerMax("player");
+    local frameWidth = mana * barData.width / maxMana;
+    
+    local manaText = string.format("%.1f", (mana / maxMana) * 100) .. "%";
+
+    if frameWidth == 0 then
+        frameWidth = 1;
+    end
+
+    barData.text:SetText(manaText);
+    barData.frame:SetWidth(frameWidth);
+end
+
 function RefreshHealth(barData)
     local health = UnitHealth("player");
     local maxHealth = UnitHealthMax("player");
@@ -390,6 +460,12 @@ function RefreshPlayerChannel(barData)
     end
 end
 
+function GetPlayerInfo()
+	local _, name = GetSpecializationInfo(GetSpecialization());
+    local _, class = UnitClass("player");
+
+    return class, name;
+end
 
     -- spellFrame:SetMovable(true);
     -- spellFrame:EnableMouse(true);
