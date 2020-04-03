@@ -33,6 +33,8 @@ function JadUI_Main()
         ArmsWarriorSetup();
     elseif (playerClass == "MAGE" and playerSpec == "Fire") then
         FireMageSetup();
+    else
+        print("|cFF00FF80JadUI v1.69|r\nPls implement for " .. playerClass .. "/" .. playerSpec .. ". :( |cFF03a1fchttps://github.com/wowas69/JadAddons|r");
     end
     
     -- Start UI updates
