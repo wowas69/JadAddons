@@ -3,4 +3,4 @@ Addons for wow
 
 Features:
 - Fully customizable in Lua code!
-- Really gud.
+- Veri gud.
